@@ -1,0 +1,16 @@
+C:\Users\neman\source\repos\BookMarket\BookMarket.Implementation\bin\Debug\netcoreapp3.1\BookMarket.Implementation.deps.json
+C:\Users\neman\source\repos\BookMarket\BookMarket.Implementation\bin\Debug\netcoreapp3.1\BookMarket.Implementation.dll
+C:\Users\neman\source\repos\BookMarket\BookMarket.Implementation\bin\Debug\netcoreapp3.1\BookMarket.Implementation.pdb
+C:\Users\neman\source\repos\BookMarket\BookMarket.Implementation\bin\Debug\netcoreapp3.1\BookMarket.Application.dll
+C:\Users\neman\source\repos\BookMarket\BookMarket.Implementation\bin\Debug\netcoreapp3.1\BookMarket.DataAccess.dll
+C:\Users\neman\source\repos\BookMarket\BookMarket.Implementation\bin\Debug\netcoreapp3.1\BookMarket.Domain.dll
+C:\Users\neman\source\repos\BookMarket\BookMarket.Implementation\bin\Debug\netcoreapp3.1\BookMarket.Application.pdb
+C:\Users\neman\source\repos\BookMarket\BookMarket.Implementation\bin\Debug\netcoreapp3.1\BookMarket.DataAccess.pdb
+C:\Users\neman\source\repos\BookMarket\BookMarket.Implementation\bin\Debug\netcoreapp3.1\BookMarket.Domain.pdb
+C:\Users\neman\source\repos\BookMarket\BookMarket.Implementation\obj\Debug\netcoreapp3.1\BookMarket.Implementation.csprojAssemblyReference.cache
+C:\Users\neman\source\repos\BookMarket\BookMarket.Implementation\obj\Debug\netcoreapp3.1\BookMarket.Implementation.AssemblyInfoInputs.cache
+C:\Users\neman\source\repos\BookMarket\BookMarket.Implementation\obj\Debug\netcoreapp3.1\BookMarket.Implementation.AssemblyInfo.cs
+C:\Users\neman\source\repos\BookMarket\BookMarket.Implementation\obj\Debug\netcoreapp3.1\BookMarket.Implementation.csproj.CoreCompileInputs.cache
+C:\Users\neman\source\repos\BookMarket\BookMarket.Implementation\obj\Debug\netcoreapp3.1\BookMarket.Implementation.csproj.CopyComplete
+C:\Users\neman\source\repos\BookMarket\BookMarket.Implementation\obj\Debug\netcoreapp3.1\BookMarket.Implementation.dll
+C:\Users\neman\source\repos\BookMarket\BookMarket.Implementation\obj\Debug\netcoreapp3.1\BookMarket.Implementation.pdb

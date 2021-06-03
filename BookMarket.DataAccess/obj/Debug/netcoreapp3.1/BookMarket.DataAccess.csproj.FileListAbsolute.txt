@@ -1,0 +1,15 @@
+C:\Users\neman\source\repos\BookMarket\BookMarket.DataAccess\bin\Debug\netcoreapp3.1\BookMarket.DataAccess.deps.json
+C:\Users\neman\source\repos\BookMarket\BookMarket.DataAccess\bin\Debug\netcoreapp3.1\BookMarket.DataAccess.runtimeconfig.json
+C:\Users\neman\source\repos\BookMarket\BookMarket.DataAccess\bin\Debug\netcoreapp3.1\BookMarket.DataAccess.runtimeconfig.dev.json
+C:\Users\neman\source\repos\BookMarket\BookMarket.DataAccess\bin\Debug\netcoreapp3.1\BookMarket.DataAccess.dll
+C:\Users\neman\source\repos\BookMarket\BookMarket.DataAccess\bin\Debug\netcoreapp3.1\BookMarket.DataAccess.pdb
+C:\Users\neman\source\repos\BookMarket\BookMarket.DataAccess\bin\Debug\netcoreapp3.1\BookMarket.Domain.dll
+C:\Users\neman\source\repos\BookMarket\BookMarket.DataAccess\bin\Debug\netcoreapp3.1\BookMarket.Domain.pdb
+C:\Users\neman\source\repos\BookMarket\BookMarket.DataAccess\obj\Debug\netcoreapp3.1\BookMarket.DataAccess.csprojAssemblyReference.cache
+C:\Users\neman\source\repos\BookMarket\BookMarket.DataAccess\obj\Debug\netcoreapp3.1\BookMarket.DataAccess.AssemblyInfoInputs.cache
+C:\Users\neman\source\repos\BookMarket\BookMarket.DataAccess\obj\Debug\netcoreapp3.1\BookMarket.DataAccess.AssemblyInfo.cs
+C:\Users\neman\source\repos\BookMarket\BookMarket.DataAccess\obj\Debug\netcoreapp3.1\BookMarket.DataAccess.csproj.CoreCompileInputs.cache
+C:\Users\neman\source\repos\BookMarket\BookMarket.DataAccess\obj\Debug\netcoreapp3.1\BookMarket.DataAccess.csproj.CopyComplete
+C:\Users\neman\source\repos\BookMarket\BookMarket.DataAccess\obj\Debug\netcoreapp3.1\BookMarket.DataAccess.dll
+C:\Users\neman\source\repos\BookMarket\BookMarket.DataAccess\obj\Debug\netcoreapp3.1\BookMarket.DataAccess.pdb
+C:\Users\neman\source\repos\BookMarket\BookMarket.DataAccess\obj\Debug\netcoreapp3.1\BookMarket.DataAccess.genruntimeconfig.cache
