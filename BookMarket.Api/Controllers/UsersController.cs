@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Bogus;
 using BookMarket.Application;
+using BookMarket.Application.Commands.UserCommands;
 using BookMarket.Application.DataTransfer;
+using BookMarket.Application.Exceptions;
 using BookMarket.Application.Searches;
 using BookMarket.DataAccess;
 using BookMarket.Domain;
@@ -75,32 +77,18 @@ namespace BookMarket.Api.Controllers
         [HttpPost]
         public IActionResult Post(
             [FromBody] User dto,
+            [FromServices] ICreateUserCommand command,
             [FromServices] CreateUserValidator validator)
         {
-            var errors = new List<ClientError>();
             var result = validator.Validate(dto);
-
-            if (!result.IsValid) return result.AsUnprocessabeEntity();
-
-            MD5 hash = MD5.Create();
-            byte[] pass = hash.ComputeHash(Encoding.UTF8.GetBytes(dto.Password));
-            StringBuilder strBuilder = new StringBuilder();
-            for(int i = 0; i < pass.Length; i++)
+            if (result.IsValid)
             {
-                strBuilder.Append(pass[i].ToString("x2"));
-            }
-            dto.Password = strBuilder.ToString();
-
-            try
-            {
-                context.Users.Add(dto);
-                context.SaveChanges();
+                //User user = mapper.Map<User>(dto);
+                //executor.ExecuteCommand(command, user);
+                command.Execute(dto);
                 return StatusCode(StatusCodes.Status201Created);
             }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return result.AsUnprocessabeEntity();
         }
 
         // PUT api/<UsersController>/5
@@ -131,23 +119,18 @@ namespace BookMarket.Api.Controllers
 
         // DELETE api/<UsersController>/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(
+            int id,
+            [FromServices] IDeleteUserCommand command)
         {
-            var user = context.Users.Find(id);
-            if (user == null) return NotFound();
-
-            user.IsDeleted = true;
-            user.IsActive = false;
-            user.DeletedAt = DateTime.Now;
-
             try
             {
-                context.SaveChanges();
+                command.Execute(id);
                 return NoContent();
             }
-            catch (Exception)
+            catch (EntityNotFoundException)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return NotFound();
             }
         }
     }

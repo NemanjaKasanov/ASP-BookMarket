@@ -1,4 +1,7 @@
+using BookMarket.Application;
+using BookMarket.Application.Commands.UserCommands;
 using BookMarket.DataAccess;
+using BookMarket.Implementation.Commands.UserCommands;
 using BookMarket.Implementation.Profiles;
 using BookMarket.Implementation.Validators;
 using Microsoft.AspNetCore.Builder;
@@ -36,6 +39,14 @@ namespace BookMarket.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BookMarket.Api", Version = "v1" });
             });
             services.AddTransient<BookMarketContext>();
+
+
+
+            services.AddTransient<ICreateUserCommand, EfCreateUserCommand>();
+            services.AddTransient<IDeleteUserCommand, EfDeleteUserCommand>();
+
+
+
             services.AddAutoMapper(typeof(UserProfile).Assembly);
             services.AddAutoMapper(typeof(GenreProfile).Assembly);
 
