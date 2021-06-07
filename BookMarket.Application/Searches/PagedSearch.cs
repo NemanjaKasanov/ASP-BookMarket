@@ -4,8 +4,9 @@ using System.Text;
 
 namespace BookMarket.Application.Searches
 {
-    public class UsersSearch : PagedSearch
+    public abstract class PagedSearch
     {
-        public string Search { get; set; }
+        public int PerPage { get; set; } = 10;
+        public int Page { get; set; } = 1;
     }
 }

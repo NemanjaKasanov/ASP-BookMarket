@@ -1,4 +1,5 @@
-﻿using BookMarket.Application.Commands.UserCommands;
+﻿using AutoMapper;
+using BookMarket.Application.Commands.UserCommands;
 using BookMarket.Application.Exceptions;
 using BookMarket.DataAccess;
 using BookMarket.Domain;
@@ -12,7 +13,7 @@ namespace BookMarket.Implementation.Commands.UserCommands
     {
         public readonly BookMarketContext context;
 
-        public EfDeleteUserCommand(BookMarketContext context)
+        public EfDeleteUserCommand(BookMarketContext context, IMapper mapper)
         {
             this.context = context;
         }

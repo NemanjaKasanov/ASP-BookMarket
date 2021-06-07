@@ -8,16 +8,19 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
+using FluentValidation;
 
 namespace BookMarket.Implementation.Commands.UserCommands
 {
     public class EfCreateUserCommand : ICreateUserCommand
     {
         private readonly BookMarketContext context;
+        private readonly CreateUserValidator validator;
 
-        public EfCreateUserCommand(BookMarketContext context)
+        public EfCreateUserCommand(BookMarketContext context, CreateUserValidator validator)
         {
             this.context = context;
+            this.validator = validator;
         }
 
         public int Id => 1;
@@ -25,6 +28,8 @@ namespace BookMarket.Implementation.Commands.UserCommands
 
         public void Execute(User dto)
         {
+            validator.ValidateAndThrow(dto);
+
             MD5 hash = MD5.Create();
             byte[] pass = hash.ComputeHash(Encoding.UTF8.GetBytes(dto.Password));
             StringBuilder strBuilder = new StringBuilder();

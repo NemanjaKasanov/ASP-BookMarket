@@ -4,6 +4,8 @@ using BookMarket.Application;
 using BookMarket.Application.Commands.UserCommands;
 using BookMarket.Application.DataTransfer;
 using BookMarket.Application.Exceptions;
+using BookMarket.Application.Interfaces;
+using BookMarket.Application.Queries.UserQueries;
 using BookMarket.Application.Searches;
 using BookMarket.DataAccess;
 using BookMarket.Domain;
@@ -28,32 +30,24 @@ namespace BookMarket.Api.Controllers
     {
         private readonly BookMarketContext context;
         private readonly IMapper mapper;
+        private readonly IApplicationActor actor;
+        private readonly UseCaseExecutor executor;
 
-        public UsersController(BookMarketContext context, IMapper mapper)
+        public UsersController(BookMarketContext context, IMapper mapper, IApplicationActor actor, UseCaseExecutor executor)
         {
             this.context = context;
             this.mapper = mapper;
+            this.actor = actor;
+            this.executor = executor;
         }
 
         // GET: api/<UsersController>
         [HttpGet]
-        public IActionResult Get([FromQuery] UsersSearch dto)
+        public IActionResult Get(
+            [FromQuery] UsersSearch dto,
+            [FromServices] IGetUsersQuery query)
         {
-            var users = context.Users.AsQueryable();
-
-            if (dto.Search != null) users = users.Where(
-                x => x.FirstName.ToLower().Contains(dto.Search.ToLower()) ||
-                     x.LastName.ToLower().Contains(dto.Search.ToLower()) ||
-                     x.Username.ToLower().Contains(dto.Search.ToLower()));
-
-            try
-            {
-                return Ok(mapper.Map<List<UserDto>>(users));
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok(executor.ExecuteQuery(query, dto));
         }
 
         // GET api/<UsersController>/5
@@ -77,18 +71,11 @@ namespace BookMarket.Api.Controllers
         [HttpPost]
         public IActionResult Post(
             [FromBody] User dto,
-            [FromServices] ICreateUserCommand command,
-            [FromServices] CreateUserValidator validator)
+            [FromServices] ICreateUserCommand command)
         {
-            var result = validator.Validate(dto);
-            if (result.IsValid)
-            {
-                //User user = mapper.Map<User>(dto);
-                //executor.ExecuteCommand(command, user);
-                command.Execute(dto);
-                return StatusCode(StatusCodes.Status201Created);
-            }
-            return result.AsUnprocessabeEntity();
+            User user = mapper.Map<User>(dto);
+            executor.ExecuteCommand(command, user);
+            return StatusCode(StatusCodes.Status201Created);
         }
 
         // PUT api/<UsersController>/5
@@ -123,15 +110,8 @@ namespace BookMarket.Api.Controllers
             int id,
             [FromServices] IDeleteUserCommand command)
         {
-            try
-            {
-                command.Execute(id);
-                return NoContent();
-            }
-            catch (EntityNotFoundException)
-            {
-                return NotFound();
-            }
+            executor.ExecuteCommand(command, id);
+            return NoContent();
         }
     }
 }

@@ -1,8 +1,13 @@
+using BookMarket.Api.Core;
 using BookMarket.Application;
 using BookMarket.Application.Commands.UserCommands;
+using BookMarket.Application.Interfaces;
+using BookMarket.Application.Queries.UserQueries;
 using BookMarket.DataAccess;
 using BookMarket.Implementation.Commands.UserCommands;
+using BookMarket.Implementation.Logging;
 using BookMarket.Implementation.Profiles;
+using BookMarket.Implementation.Queries.UserQueries;
 using BookMarket.Implementation.Validators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Nedelja7.Api.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,27 +47,29 @@ namespace BookMarket.Api
             services.AddTransient<BookMarketContext>();
 
 
-
+            services.AddTransient<IGetUsersQuery, EfGetUsersQuery>();
+            services.AddTransient<IGetUserQuery, EfGetUserQuery>();
             services.AddTransient<ICreateUserCommand, EfCreateUserCommand>();
             services.AddTransient<IDeleteUserCommand, EfDeleteUserCommand>();
 
+
+            services.AddTransient<IApplicationActor, FakeApiActor>();
+            services.AddTransient<IUseCaseLogger, ConsoleUseCaseLogger>();
+            services.AddTransient<UseCaseExecutor>();
 
 
             services.AddAutoMapper(typeof(UserProfile).Assembly);
             services.AddAutoMapper(typeof(GenreProfile).Assembly);
 
+
             services.AddTransient<CreateUserValidator>();
             services.AddTransient<UpdateUserValidator>();
-
             services.AddTransient<CreateGenreValidator>();
             services.AddTransient<UpdateGenreValidator>();
-
             services.AddTransient<CreateWriterValidator>();
             services.AddTransient<UpdateWriterValidator>();
-
             services.AddTransient<CreatePublisherValidator>();
             services.AddTransient<UpdatePublisherValidator>();
-
             services.AddTransient<CreateBookValidator>();
             services.AddTransient<UpdateBookValidator>();
         }
@@ -79,6 +87,8 @@ namespace BookMarket.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseMiddleware<GlobalExceptionHandler>();
 
             app.UseAuthorization();
 
