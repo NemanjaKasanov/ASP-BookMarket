@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using FluentValidation;
+using BookMarket.Application.Email;
 
 namespace BookMarket.Implementation.Commands.UserCommands
 {
@@ -16,14 +17,16 @@ namespace BookMarket.Implementation.Commands.UserCommands
     {
         private readonly BookMarketContext context;
         private readonly CreateUserValidator validator;
+        private readonly IEmailSender sender;
 
-        public EfCreateUserCommand(BookMarketContext context, CreateUserValidator validator)
+        public EfCreateUserCommand(BookMarketContext context, CreateUserValidator validator, IEmailSender sender)
         {
             this.context = context;
             this.validator = validator;
+            this.sender = sender;
         }
 
-        public int Id => 1;
+        public int Id => 4;
         public string Name => "Create New User";
 
         public void Execute(User dto)
@@ -41,6 +44,13 @@ namespace BookMarket.Implementation.Commands.UserCommands
 
             context.Users.Add(dto);
             context.SaveChanges();
+
+            sender.Send(new SendEmailDto
+            {
+                Content = "<h1>BookMarket: Thank You for Joining Us!</h1><p>You have successfully created a new BookMarket account.</p>",
+                SendTo = dto.Email,
+                Subject = "BookMarket Registration."
+            });
         }
     }
 }

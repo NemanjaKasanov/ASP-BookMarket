@@ -21,7 +21,7 @@ namespace BookMarket.Implementation.Queries.UserQueries
             this.mapper = mapper;
         }
 
-        public int Id => 1;
+        public int Id => 4;
 
         public string Name => "Get User.";
 

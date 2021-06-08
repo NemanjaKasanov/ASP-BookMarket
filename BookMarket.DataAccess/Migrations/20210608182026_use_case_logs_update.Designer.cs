@@ -4,14 +4,16 @@ using BookMarket.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BookMarket.DataAccess.Migrations
 {
     [DbContext(typeof(BookMarketContext))]
-    partial class BookMarketContextModelSnapshot : ModelSnapshot
+    [Migration("20210608182026_use_case_logs_update")]
+    partial class use_case_logs_update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

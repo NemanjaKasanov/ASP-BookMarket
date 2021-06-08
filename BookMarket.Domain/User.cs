@@ -14,5 +14,7 @@ namespace BookMarket.Domain
         public string Address { get; set; }
         public string Phone { get; set; }
         public int Role { get; set; }
+
+        public virtual ICollection<UserUseCase> UserUseCases { get; set; }
     }
 }

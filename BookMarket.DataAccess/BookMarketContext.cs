@@ -69,5 +69,8 @@ namespace BookMarket.DataAccess
         public DbSet<Writer> Writers { get; set; }
         public DbSet<Publisher> Publishers { get; set; }
         public DbSet<Book> Books { get; set; }
+
+
+        public DbSet<UseCaseLog> UseCaseLogs { get; set; }
     }
 }

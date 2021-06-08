@@ -3,6 +3,7 @@ using Bogus;
 using BookMarket.Application;
 using BookMarket.Application.Commands.UserCommands;
 using BookMarket.Application.DataTransfer;
+using BookMarket.Application.Email;
 using BookMarket.Application.Exceptions;
 using BookMarket.Application.Interfaces;
 using BookMarket.Application.Queries.UserQueries;
@@ -11,6 +12,7 @@ using BookMarket.DataAccess;
 using BookMarket.Domain;
 using BookMarket.Implementation.Extensions;
 using BookMarket.Implementation.Validators;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -33,12 +35,12 @@ namespace BookMarket.Api.Controllers
         private readonly IApplicationActor actor;
         private readonly UseCaseExecutor executor;
 
-        public UsersController(BookMarketContext context, IMapper mapper, IApplicationActor actor, UseCaseExecutor executor)
+        public UsersController(IMapper mapper, IApplicationActor actor, UseCaseExecutor executor, BookMarketContext context)
         {
-            this.context = context;
             this.mapper = mapper;
             this.actor = actor;
             this.executor = executor;
+            this.context = context;
         }
 
         // GET: api/<UsersController>
@@ -79,6 +81,7 @@ namespace BookMarket.Api.Controllers
         }
 
         // PUT api/<UsersController>/5
+        [Authorize]
         [HttpPut("{id}")]
         public IActionResult Put(
             int id, 
@@ -105,6 +108,7 @@ namespace BookMarket.Api.Controllers
         }
 
         // DELETE api/<UsersController>/5
+        [Authorize]
         [HttpDelete("{id}")]
         public IActionResult Delete(
             int id,
