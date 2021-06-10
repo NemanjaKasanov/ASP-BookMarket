@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using BookMarket.Application;
+using BookMarket.Application.Commands.GenreCommands;
 using BookMarket.Application.DataTransfer;
+using BookMarket.Application.Interfaces;
+using BookMarket.Application.Queries.GenreQueries;
 using BookMarket.Application.Searches;
 using BookMarket.DataAccess;
 using BookMarket.Domain;
@@ -22,73 +25,43 @@ namespace BookMarket.Api.Controllers
     public class GenresController : ControllerBase
     {
         private readonly BookMarketContext context;
+        private readonly IApplicationActor actor;
         private readonly IMapper mapper;
+        private readonly UseCaseExecutor executor;
 
-        public GenresController(BookMarketContext context, IMapper mapper)
+        public GenresController(BookMarketContext context, IMapper mapper, IApplicationActor actor, UseCaseExecutor executor)
         {
             this.context = context;
             this.mapper = mapper;
+            this.actor = actor;
+            this.executor = executor;
         }
 
         // GET: api/<GenresController>
         [HttpGet]
-        public IActionResult Get([FromQuery] GenresSearch dto)
+        public IActionResult Get(
+            [FromQuery] GenresSearch dto,
+            [FromServices] IGetGenresQuery query)
         {
-            var genres = context.Genres.AsQueryable();
-
-            if (dto.Search != null)
-            {
-                genres = genres.Where(x => x.Name.ToLower().Contains(dto.Search.ToLower()));
-            }
-
-            try
-            {
-                return Ok(mapper.Map<List<GenreDto>>(genres));
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok(executor.ExecuteQuery(query, dto));
         }
 
         // GET api/<GenresController>/5
         [HttpGet("{id}", Name = "GetGenre")]
-        public IActionResult Get(int id)
+        public IActionResult Get(int id, [FromServices] IGetGenreQuery query)
         {
-            var genre = context.Genres.Find(id);
-            if (genre == null) return NotFound();
-
-            try
-            {
-                return Ok(mapper.Map<GenreDto>(genre));
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok(executor.ExecuteQuery(query, id));
         }
 
         // POST api/<GenresController>
         [HttpPost]
         public IActionResult Post(
             [FromBody] Genre dto,
-            [FromServices] CreateGenreValidator validator)
+            [FromServices] ICreateGenreCommand command)
         {
-            var errors = new List<ClientError>();
-            var result = validator.Validate(dto);
-
-            if (!result.IsValid) return result.AsUnprocessabeEntity();
-
-            try
-            {
-                context.Genres.Add(dto);
-                context.SaveChanges();
-                return StatusCode(StatusCodes.Status201Created);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            Genre genre = mapper.Map<Genre>(dto);
+            executor.ExecuteCommand(command, genre);
+            return StatusCode(StatusCodes.Status201Created);
         }
 
         // PUT api/<GenresController>/5
@@ -96,47 +69,21 @@ namespace BookMarket.Api.Controllers
         public IActionResult Put(
             int id,
             [FromBody] UpdateGenreDto dto,
-            [FromServices] UpdateGenreValidator validator)
+            [FromServices] IUpdateGenreCommand command)
         {
-            var genre = context.Genres.Find(id);
-            if (genre == null) return NotFound();
-
-            var result = validator.Validate(dto);
-            if (!result.IsValid) return result.AsUnprocessabeEntity();
-
-            mapper.Map(dto, genre);
-
-            try
-            {
-                context.SaveChanges();
-                return NoContent();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            dto.Id = id;
+            executor.ExecuteCommand(command, dto);
+            return StatusCode(StatusCodes.Status202Accepted);
         }
 
         // DELETE api/<GenresController>/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(
+            int id,
+            [FromServices] IDeleteGenreCommand command)
         {
-            var genre = context.Genres.Find(id);
-            if (genre == null) return NotFound();
-
-            genre.IsDeleted = true;
-            genre.IsActive = false;
-            genre.DeletedAt = DateTime.Now;
-
-            try
-            {
-                context.SaveChanges();
-                return NoContent();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            executor.ExecuteCommand(command, id);
+            return NoContent();
         }
     }
 }

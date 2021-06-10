@@ -45,73 +45,21 @@ namespace BookMarket.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var appSettings = new AppSettings();
 
+            Configuration.Bind(appSettings);
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "BookMarket.Api", Version = "v1" });
-            });
             services.AddTransient<BookMarketContext>();
-
-            services.AddTransient<IEmailSender, SmtpEmailSender>();
-            
-            services.AddTransient<IGetUsersQuery, EfGetUsersQuery>();
-            services.AddTransient<IGetUserQuery, EfGetUserQuery>();
-            services.AddTransient<ICreateUserCommand, EfCreateUserCommand>();
-            services.AddTransient<IDeleteUserCommand, EfDeleteUserCommand>();
-
-
+            services.AddTransient<IEmailSender, SmtpEmailSender>(x => new SmtpEmailSender(appSettings.EmailFrom, appSettings.EmailPassword));
+            services.AddUseCases();
             services.AddHttpContextAccessor();
-            services.AddTransient<IApplicationActor>(x => 
-            {
-                var accessor = x.GetService<IHttpContextAccessor>();
-                var user = accessor.HttpContext.User;
-                if (user.FindFirst("ActorData") == null) return new UnauthorizedActor();
-                var actorString = user.FindFirst("ActorData").Value;
-                var actor = JsonConvert.DeserializeObject<JwtActor>(actorString);
-                return actor;
-            });
+            services.AddApplicationActor();
             services.AddTransient<IUseCaseLogger, DatabaseUseCaseLogger>();
             services.AddTransient<UseCaseExecutor>();
-            services.AddTransient<JwtManager>();
-
-
             services.AddAutoMapper(typeof(UserProfile).Assembly);
             services.AddAutoMapper(typeof(GenreProfile).Assembly);
-
-
-            services.AddTransient<CreateUserValidator>();
-            services.AddTransient<UpdateUserValidator>();
-            services.AddTransient<CreateGenreValidator>();
-            services.AddTransient<UpdateGenreValidator>();
-            services.AddTransient<CreateWriterValidator>();
-            services.AddTransient<UpdateWriterValidator>();
-            services.AddTransient<CreatePublisherValidator>();
-            services.AddTransient<UpdatePublisherValidator>();
-            services.AddTransient<CreateBookValidator>();
-            services.AddTransient<UpdateBookValidator>();
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(cfg =>
-            {
-                cfg.RequireHttpsMetadata = false;
-                cfg.SaveToken = true;
-                cfg.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidIssuer = "asp_api",
-                    ValidateIssuer = true,
-                    ValidAudience = "Any",
-                    ValidateAudience = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ThisIsMyVerySecretKey")),
-                    ValidateIssuerSigningKey = true,
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero
-                };
-            });
+            services.AddJwt(appSettings);
+            services.AddSwagger();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -136,6 +84,13 @@ namespace BookMarket.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Swagger");
             });
         }
     }

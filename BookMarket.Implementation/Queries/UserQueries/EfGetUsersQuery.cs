@@ -44,11 +44,13 @@ namespace BookMarket.Implementation.Queries.UserQueries
                     Id = x.Id,
                     FirstName = x.FirstName,
                     LastName = x.LastName,
-                    Email = x.Email
+                    Email = x.Email,
+                    Username = x.Username,
+                    Address = x.Address,
+                    Phone = x.Phone
                 }).ToList()
             };
             return response;
-            //return mapper.Map<List<UserDto>>(users);
         }
     }
 }

@@ -9,14 +9,14 @@ namespace BookMarket.Implementation.Email
 {
     public class SmtpEmailSender : IEmailSender
     {
-        //private readonly string _fromEmail;
-        //private readonly string _fromPassword;
+        private readonly string _fromEmail;
+        private readonly string _fromPassword;
 
-        //public SmtpEmailSender(string fromEmail, string fromPassword)
-        //{
-        //    _fromEmail = fromEmail;
-        //    _fromPassword = fromPassword;
-        //}
+        public SmtpEmailSender(string fromEmail, string fromPassword)
+        {
+            _fromEmail = fromEmail;
+            _fromPassword = fromPassword;
+        }
 
         public void Send(SendEmailDto dto)
         {
@@ -27,10 +27,10 @@ namespace BookMarket.Implementation.Email
                 EnableSsl = true,
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
-                Credentials = new NetworkCredential("nemanja.srb1234@gmail.com", "******************")
+                Credentials = new NetworkCredential(_fromEmail, _fromPassword)
             };
 
-            var message = new MailMessage("nemanja.srb1234@gmail.com", dto.SendTo);
+            var message = new MailMessage(_fromEmail, dto.SendTo);
             message.Subject = dto.Subject;
             message.Body = dto.Content;
             message.IsBodyHtml = true;

@@ -147,3 +147,5 @@ C:\Users\neman\source\repos\BookMarket\BookMarket.Api\obj\Debug\net5.0\BookMarke
 C:\Users\neman\source\repos\BookMarket\BookMarket.Api\bin\Debug\net5.0\Bogus.dll
 C:\Users\neman\source\repos\BookMarket\BookMarket.Api\bin\Debug\net5.0\Microsoft.DotNet.PlatformAbstractions.dll
 C:\Users\neman\source\repos\BookMarket\BookMarket.Api\bin\Debug\net5.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\neman\source\repos\BookMarket\BookMarket.Api\bin\Debug\net5.0\appsettings.Production.json
+C:\Users\neman\source\repos\BookMarket\BookMarket.Api\bin\Debug\net5.0\appsettings.Uat.json

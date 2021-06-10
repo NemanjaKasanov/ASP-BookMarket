@@ -30,17 +30,15 @@ namespace BookMarket.Api.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly BookMarketContext context;
         private readonly IMapper mapper;
         private readonly IApplicationActor actor;
         private readonly UseCaseExecutor executor;
 
-        public UsersController(IMapper mapper, IApplicationActor actor, UseCaseExecutor executor, BookMarketContext context)
+        public UsersController(IMapper mapper, IApplicationActor actor, UseCaseExecutor executor)
         {
             this.mapper = mapper;
             this.actor = actor;
             this.executor = executor;
-            this.context = context;
         }
 
         // GET: api/<UsersController>
@@ -54,19 +52,9 @@ namespace BookMarket.Api.Controllers
 
         // GET api/<UsersController>/5
         [HttpGet("{id}", Name = "GetUser")]
-        public IActionResult Get(int id)
+        public IActionResult Get(int id, [FromServices] IGetUserQuery query)
         {
-            var user = context.Users.Find(id);
-            if (user == null) return NotFound();
-
-            try
-            {
-                return Ok(mapper.Map<UserDto>(user));
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok(executor.ExecuteQuery(query, id));
         }
 
         // POST api/<UsersController>
@@ -86,25 +74,11 @@ namespace BookMarket.Api.Controllers
         public IActionResult Put(
             int id, 
             [FromBody] UpdateUserDto dto,
-            [FromServices] UpdateUserValidator validator)
+            [FromServices] IUpdateUserCommand command)
         {
-            var user = context.Users.Find(id);
-            if (user == null) return NotFound();
-
-            var result = validator.Validate(dto);
-            if (!result.IsValid) return result.AsUnprocessabeEntity();
-
-            mapper.Map(dto, user);
-
-            try
-            {
-                context.SaveChanges();
-                return NoContent();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            dto.Id = id;
+            executor.ExecuteCommand(command, dto);
+            return StatusCode(StatusCodes.Status202Accepted);
         }
 
         // DELETE api/<UsersController>/5

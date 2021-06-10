@@ -15,10 +15,14 @@ namespace BookMarket.Api.Core
     public class JwtManager
     {
         private readonly BookMarketContext _context;
+        private readonly string _issuer;
+        private readonly string _secretKey;
 
-        public JwtManager(BookMarketContext context)
+        public JwtManager(BookMarketContext context, string issuer, string secretKey)
         {
             _context = context;
+            _issuer = issuer;
+            _secretKey = secretKey;
         }
 
         public string MakeToken(string email, string password)
@@ -37,24 +41,22 @@ namespace BookMarket.Api.Core
                 Identity = user.Username
             };
 
-            var issuer = "asp_api";
-            var secretKey = "ThisIsMyVerySecretKey";
             var claims = new List<Claim> // Jti : "", 
             {
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString(), ClaimValueTypes.String, issuer),
-                new Claim(JwtRegisteredClaimNames.Iss, "asp_api", ClaimValueTypes.String, issuer),
-                new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64, issuer),
-                new Claim("UserId", actor.Id.ToString(), ClaimValueTypes.String, issuer),
-                new Claim("ActorData", JsonConvert.SerializeObject(actor), ClaimValueTypes.String, issuer)
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString(), ClaimValueTypes.String, _issuer),
+                new Claim(JwtRegisteredClaimNames.Iss, "asp_api", ClaimValueTypes.String, _issuer),
+                new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64, _issuer),
+                new Claim("UserId", actor.Id.ToString(), ClaimValueTypes.String, _issuer),
+                new Claim("ActorData", JsonConvert.SerializeObject(actor), ClaimValueTypes.String, _issuer)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
 
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var now = DateTime.UtcNow;
             var token = new JwtSecurityToken(
-                issuer: issuer,
+                issuer: _issuer,
                 audience: "Any",
                 claims: claims,
                 notBefore: now,

@@ -20,7 +20,7 @@ namespace BookMarket.Implementation.Commands.UserCommands
 
         public int Id => 1;
 
-        public string Name => "Delete Group Command";
+        public string Name => "Delete User Command";
 
         public void Execute(int request)
         {
