@@ -1,6 +1,10 @@
 ﻿using AutoMapper;
 using BookMarket.Application;
+using BookMarket.Application.Commands.PublisherCommands;
 using BookMarket.Application.DataTransfer;
+using BookMarket.Application.Interfaces;
+using BookMarket.Application.Queries.PublisherQueries;
+using BookMarket.Application.Queries.WriterQueries;
 using BookMarket.Application.Searches;
 using BookMarket.DataAccess;
 using BookMarket.Domain;
@@ -21,74 +25,42 @@ namespace BookMarket.Api.Controllers
     [ApiController]
     public class PublishersController : ControllerBase
     {
-        private readonly BookMarketContext context;
         private readonly IMapper mapper;
+        private readonly IApplicationActor actor;
+        private readonly UseCaseExecutor executor;
 
-        public PublishersController(BookMarketContext context, IMapper mapper)
+        public PublishersController(IMapper mapper, UseCaseExecutor executor, IApplicationActor actor)
         {
-            this.context = context;
             this.mapper = mapper;
+            this.executor = executor;
+            this.actor = actor;
         }
 
         // GET: api/<PublishersController>
         [HttpGet]
-        public IActionResult Get([FromQuery] PublishersSearch dto)
+        public IActionResult Get(
+            [FromQuery] PublishersSearch dto,
+            [FromServices] IGetPublishersQuery query)
         {
-            var publ = context.Publishers.AsQueryable();
-
-            if (dto.Search != null)
-            {
-                publ = publ.Where(x => x.Name.ToLower().Contains(dto.Search.ToLower()));
-            }
-
-            try
-            {
-                return Ok(mapper.Map<List<PublisherDto>>(publ));
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok(executor.ExecuteQuery(query, dto));
         }
 
         // GET api/<PublishersController>/5
         [HttpGet("{id}", Name = "GetPublisher")]
-        public IActionResult Get(int id)
+        public IActionResult Get(int id, [FromServices] IGetPublisherQuery query)
         {
-            var publ = context.Publishers.Find(id);
-            if (publ == null) return NotFound();
-
-            try
-            {
-                return Ok(mapper.Map<PublisherDto>(publ));
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok(executor.ExecuteQuery(query, id));
         }
 
         // POST api/<PublishersController>
         [HttpPost]
         public IActionResult Post(
             [FromBody] Publisher dto,
-            [FromServices] CreatePublisherValidator validator)
+            [FromServices] ICreatePublisherCommand command)
         {
-            var errors = new List<ClientError>();
-            var result = validator.Validate(dto);
-
-            if (!result.IsValid) return result.AsUnprocessabeEntity();
-
-            try
-            {
-                context.Publishers.Add(dto);
-                context.SaveChanges();
-                return StatusCode(StatusCodes.Status201Created);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            Publisher pub = mapper.Map<Publisher>(dto);
+            executor.ExecuteCommand(command, pub);
+            return StatusCode(StatusCodes.Status201Created);
         }
 
         // PUT api/<PublishersController>/5
@@ -96,47 +68,21 @@ namespace BookMarket.Api.Controllers
         public IActionResult Put(
             int id,
             [FromBody] UpdatePublisherDto dto,
-            [FromServices] UpdatePublisherValidator validator)
+            [FromServices] IUpdatePublisherCommand command)
         {
-            var publ = context.Publishers.Find(id);
-            if (publ == null) return NotFound();
-
-            var result = validator.Validate(dto);
-            if (!result.IsValid) return result.AsUnprocessabeEntity();
-
-            mapper.Map(dto, publ);
-
-            try
-            {
-                context.SaveChanges();
-                return NoContent();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            dto.Id = id;
+            executor.ExecuteCommand(command, dto);
+            return StatusCode(StatusCodes.Status202Accepted);
         }
 
         // DELETE api/<PublishersController>/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(
+            int id,
+            [FromServices] IDeletePublisherCommand command)
         {
-            var publ = context.Publishers.Find(id);
-            if (publ == null) return NotFound();
-
-            publ.IsDeleted = true;
-            publ.IsActive = false;
-            publ.DeletedAt = DateTime.Now;
-
-            try
-            {
-                context.SaveChanges();
-                return NoContent();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            executor.ExecuteCommand(command, id);
+            return NoContent();
         }
     }
 }

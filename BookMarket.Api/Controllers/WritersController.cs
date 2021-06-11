@@ -1,6 +1,11 @@
 ﻿using AutoMapper;
 using BookMarket.Application;
+using BookMarket.Application.Commands.GenreCommands;
+using BookMarket.Application.Commands.WriterCommands;
 using BookMarket.Application.DataTransfer;
+using BookMarket.Application.Interfaces;
+using BookMarket.Application.Queries.GenreQueries;
+using BookMarket.Application.Queries.WriterQueries;
 using BookMarket.Application.Searches;
 using BookMarket.DataAccess;
 using BookMarket.Domain;
@@ -21,74 +26,43 @@ namespace BookMarket.Api.Controllers
     [ApiController]
     public class WritersController : ControllerBase
     {
-        private readonly BookMarketContext context;
         private readonly IMapper mapper;
+        private readonly IApplicationActor actor;
+        private readonly UseCaseExecutor executor;
 
-        public WritersController(BookMarketContext context, IMapper mapper)
+        public WritersController(IMapper mapper, IApplicationActor actor, UseCaseExecutor executor)
         {
-            this.context = context;
             this.mapper = mapper;
+            this.actor = actor;
+            this.executor = executor;
         }
 
         // GET: api/<WritersController>
         [HttpGet]
-        public IActionResult Get([FromQuery] WritersSearch dto)
+        public IActionResult Get(
+            [FromQuery] WritersSearch dto,
+            [FromServices] IGetWritersQuery query)
         {
-            var writers = context.Writers.AsQueryable();
-
-            if (dto.Search != null)
-            {
-                writers = writers.Where(x => x.Name.ToLower().Contains(dto.Search.ToLower()));
-            }
-
-            try
-            {
-                return Ok(mapper.Map<List<WriterDto>>(writers));
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok(executor.ExecuteQuery(query, dto));
         }
 
         // GET api/<WritersController>/5
         [HttpGet("{id}", Name = "GetWriter")]
-        public IActionResult Get(int id)
+        public IActionResult Get(int id, [FromServices] IGetWriterQuery query)
         {
-            var writer = context.Writers.Find(id);
-            if (writer == null) return NotFound();
-
-            try
-            {
-                return Ok(mapper.Map<WriterDto>(writer));
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok(executor.ExecuteQuery(query, id));
         }
 
         // POST api/<WritersController>
         [HttpPost]
         public IActionResult Post(
             [FromBody] Writer dto,
-            [FromServices] CreateWriterValidator validator)
+            [FromServices] ICreateWriterCommand command)
         {
-            var errors = new List<ClientError>();
-            var result = validator.Validate(dto);
+            Writer writer = mapper.Map<Writer>(dto);
+            executor.ExecuteCommand(command, writer);
+            return StatusCode(StatusCodes.Status201Created);
 
-            if (!result.IsValid) return result.AsUnprocessabeEntity();
-
-            try
-            {
-                context.Writers.Add(dto);
-                context.SaveChanges();
-                return StatusCode(StatusCodes.Status201Created);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
         }
 
         // PUT api/<WritersController>/5
@@ -96,47 +70,21 @@ namespace BookMarket.Api.Controllers
         public IActionResult Put(
             int id,
             [FromBody] UpdateWriterDto dto,
-            [FromServices] UpdateWriterValidator validator)
+            [FromServices] IUpdateWriterCommand command)
         {
-            var writer = context.Writers.Find(id);
-            if (writer == null) return NotFound();
-
-            var result = validator.Validate(dto);
-            if (!result.IsValid) return result.AsUnprocessabeEntity();
-
-            mapper.Map(dto, writer);
-
-            try
-            {
-                context.SaveChanges();
-                return NoContent();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            dto.Id = id;
+            executor.ExecuteCommand(command, dto);
+            return StatusCode(StatusCodes.Status202Accepted);
         }
 
         // DELETE api/<WritersController>/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(
+            int id,
+            [FromServices] IDeleteWriterCommand command)
         {
-            var writer = context.Writers.Find(id);
-            if (writer == null) return NotFound();
-
-            writer.IsDeleted = true;
-            writer.IsActive = false;
-            writer.DeletedAt = DateTime.Now;
-
-            try
-            {
-                context.SaveChanges();
-                return NoContent();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            executor.ExecuteCommand(command, id);
+            return NoContent();
         }
     }
 }

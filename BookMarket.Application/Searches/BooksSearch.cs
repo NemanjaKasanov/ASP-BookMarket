@@ -4,12 +4,14 @@ using System.Text;
 
 namespace BookMarket.Application.Searches
 {
-    public class BooksSearch
+    public class BooksSearch : PagedSearch
     {
         public string Search { get; set; }
 
-        public string Title { get; set; }
-        public string Writer { get; set; }
-        public string Description { get; set; }
+        public int? GenreId { get; set; }
+        public int? PublisherId { get; set; }
+
+        public decimal? PriceMin { get; set; }
+        public decimal? PriceMax { get; set; }
     }
 }

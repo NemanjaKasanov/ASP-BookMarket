@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BookMarket.Application;
 using BookMarket.Application.DataTransfer;
+using BookMarket.Application.Queries.BookQueries;
 using BookMarket.Application.Searches;
 using BookMarket.DataAccess;
 using BookMarket.Domain;
@@ -8,6 +9,7 @@ using BookMarket.Implementation.Extensions;
 using BookMarket.Implementation.Validators;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,52 +25,31 @@ namespace BookMarket.Api.Controllers
     {
         private readonly BookMarketContext context;
         private readonly IMapper mapper;
+        private readonly UseCaseExecutor executor;
 
-        public BooksController(BookMarketContext context, IMapper mapper)
+        public BooksController(BookMarketContext context, IMapper mapper, UseCaseExecutor executor)
         {
             this.context = context;
             this.mapper = mapper;
+            this.executor = executor;
         }
 
         // GET: api/<BooksController>
         [HttpGet]
-        public IActionResult Get([FromQuery] BooksSearch dto)
+        public IActionResult Get(
+            [FromQuery] BooksSearch dto,
+            [FromServices] IGetBooksQuery query)
         {
-            var books = context.Books.AsQueryable();
-
-            if(dto.Search != null)
-            {
-                books = books.Where(
-                    x => x.Title.ToLower().Contains(dto.Search.ToLower()) ||
-                         x.Writer.Name.ToLower().Contains(dto.Search.ToLower()) ||
-                         x.Description.ToLower().Contains(dto.Search.ToLower()));
-            }
-
-            try
-            {
-                return Ok(mapper.Map<List<BookDto>>(books));
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok(executor.ExecuteQuery(query, dto));
         }
 
         // GET api/<BooksController>/5
         [HttpGet("{id}", Name = "GetBook")]
-        public IActionResult Get(int id)
+        public IActionResult Get(
+            int id,
+            [FromServices] IGetBookQuery query)
         {
-            var book = context.Books.Find(id);
-            if (book == null) return NotFound();
-
-            try
-            {
-                return Ok(mapper.Map<BookDto>(book));
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok(executor.ExecuteQuery(query, id));
         }
 
         // POST api/<BooksController>
@@ -77,7 +58,6 @@ namespace BookMarket.Api.Controllers
             [FromBody] Book dto,
             [FromServices] CreateBookValidator validator)
         {
-            var errors = new List<ClientError>();
             var result = validator.Validate(dto);
 
             if (!result.IsValid) return result.AsUnprocessabeEntity();

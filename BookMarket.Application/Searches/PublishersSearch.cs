@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BookMarket.Application.Searches
 {
-    public class PublishersSearch
+    public class PublishersSearch : PagedSearch
     {
         public string Search { get; set; }
     }

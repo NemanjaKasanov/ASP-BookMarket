@@ -1,13 +1,23 @@
 ﻿using BookMarket.Application.Commands.GenreCommands;
+using BookMarket.Application.Commands.PublisherCommands;
 using BookMarket.Application.Commands.UserCommands;
+using BookMarket.Application.Commands.WriterCommands;
 using BookMarket.Application.Interfaces;
+using BookMarket.Application.Queries.BookQueries;
 using BookMarket.Application.Queries.GenreQueries;
+using BookMarket.Application.Queries.PublisherQueries;
 using BookMarket.Application.Queries.UserQueries;
+using BookMarket.Application.Queries.WriterQueries;
 using BookMarket.DataAccess;
 using BookMarket.Implementation.Commands.GenreCommands;
+using BookMarket.Implementation.Commands.PublisherCommands;
 using BookMarket.Implementation.Commands.UserCommands;
+using BookMarket.Implementation.Commands.WriterCommands;
+using BookMarket.Implementation.Queries.BookQueries;
 using BookMarket.Implementation.Queries.GenreQueries;
+using BookMarket.Implementation.Queries.PublisherCommands;
 using BookMarket.Implementation.Queries.UserQueries;
+using BookMarket.Implementation.Queries.WriterQueries;
 using BookMarket.Implementation.Validators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
@@ -28,18 +38,37 @@ namespace BookMarket.Api.Core
         public static void AddUseCases(this IServiceCollection services) 
         {
             // Commands and Queries
+            // Users
             services.AddTransient<IGetUsersQuery, EfGetUsersQuery>();
             services.AddTransient<IGetUserQuery, EfGetUserQuery>();
             services.AddTransient<ICreateUserCommand, EfCreateUserCommand>();
             services.AddTransient<IUpdateUserCommand, EfUpdateUserCommand>();
             services.AddTransient<IDeleteUserCommand, EfDeleteUserCommand>();
 
+            // Genres
             services.AddTransient<IGetGenresQuery, EfGetGenresQuery>();
             services.AddTransient<IGetGenreQuery, EfGetGenreQuery>();
             services.AddTransient<ICreateGenreCommand, EfCreateGenreCommand>();
             services.AddTransient<IUpdateGenreCommand, EfUpdateGenreCommand>();
             services.AddTransient<IDeleteGenreCommand, EfDeleteGenreCommand>();
 
+            // Writers
+            services.AddTransient<IGetWritersQuery, EfGetWritersQuery>();
+            services.AddTransient<IGetWriterQuery, EfGetWriterQuery>();
+            services.AddTransient<ICreateWriterCommand, EfCreateWriterCommand>();
+            services.AddTransient<IUpdateWriterCommand, EfUpdateWriterCommand>();
+            services.AddTransient<IDeleteWriterCommand, EfDeleteWriterCommand>();
+
+            // Publishers
+            services.AddTransient<IGetPublishersQuery, EfGetPublishersQuery>();
+            services.AddTransient<IGetPublisherQuery, EfGetPublisherQuery>();
+            services.AddTransient<ICreatePublisherCommand, EfCreatePublisherCommand>();
+            services.AddTransient<IUpdatePublisherCommand, EfUpdatePublisherCommand>();
+            services.AddTransient<IDeletePublisherCommand, EfDeletePublisherCommand>();
+
+            // Books
+            services.AddTransient<IGetBooksQuery, EfGetBooksQuery>();
+            services.AddTransient<IGetBookQuery, EfGetBookQuery>();
 
 
             // Validators

@@ -24,14 +24,12 @@ namespace BookMarket.Api.Controllers
     [ApiController]
     public class GenresController : ControllerBase
     {
-        private readonly BookMarketContext context;
         private readonly IApplicationActor actor;
         private readonly IMapper mapper;
         private readonly UseCaseExecutor executor;
 
-        public GenresController(BookMarketContext context, IMapper mapper, IApplicationActor actor, UseCaseExecutor executor)
+        public GenresController(IMapper mapper, IApplicationActor actor, UseCaseExecutor executor)
         {
-            this.context = context;
             this.mapper = mapper;
             this.actor = actor;
             this.executor = executor;
