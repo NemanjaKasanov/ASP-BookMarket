@@ -42,10 +42,9 @@ namespace BookMarket.Implementation.Validators
             RuleFor(x => x.PublisherId)
                 .Must(p => _context.Publishers.Any(publ => publ.Id == p))
                 .WithMessage("Given publisher does not exist in the database.");
-            /*RuleFor(x => x.BookGenres)
+            RuleFor(x => x.BookGenres)
                 .NotEmpty()
-                .WithMessage("No book genre defined.")
-                .Must(y => _context.Genres.Any(g => g.BookGenres.BookId));*/
+                .WithMessage("No book genre defined.");
         }
     }
 }

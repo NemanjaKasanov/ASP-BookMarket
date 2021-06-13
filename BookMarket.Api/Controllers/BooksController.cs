@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BookMarket.Application;
+using BookMarket.Application.Commands.BookCommands;
 using BookMarket.Application.DataTransfer;
 using BookMarket.Application.Queries.BookQueries;
 using BookMarket.Application.Searches;
@@ -56,34 +57,32 @@ namespace BookMarket.Api.Controllers
         [HttpPost]
         public IActionResult Post(
             [FromBody] Book dto,
-            [FromServices] CreateBookValidator validator)
+            [FromServices] ICreateBookCommand command)
         {
-            var result = validator.Validate(dto);
-
-            if (!result.IsValid) return result.AsUnprocessabeEntity();
-
-            try
-            {
-                context.Books.Add(dto);
-                context.SaveChanges();
-                return StatusCode(StatusCodes.Status201Created);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            executor.ExecuteCommand(command, dto);
+            return StatusCode(StatusCodes.Status201Created);
         }
 
         // PUT api/<BooksController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(
+            int id, 
+            [FromBody] Book dto,
+            [FromServices] IUpdateBookCommand command)
         {
+            dto.Id = id;
+            executor.ExecuteCommand(command, dto);
+            return StatusCode(StatusCodes.Status202Accepted);
         }
 
         // DELETE api/<BooksController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(
+            int id,
+            [FromServices] IDeleteBookCommand command)
         {
+            executor.ExecuteCommand(command, id);
+            return NoContent();
         }
     }
 }

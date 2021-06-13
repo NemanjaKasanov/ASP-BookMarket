@@ -16,5 +16,7 @@ namespace BookMarket.Domain
         public int Role { get; set; }
 
         public virtual ICollection<UserUseCase> UserUseCases { get; set; }
+        public virtual ICollection<Cart> Carts { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }

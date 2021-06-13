@@ -92,6 +92,47 @@ namespace BookMarket.DataAccess.Migrations
                     b.ToTable("BookGenre");
                 });
 
+            modelBuilder.Entity("BookMarket.Domain.Cart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Quantity")
+                        .HasMaxLength(10)
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Carts");
+                });
+
             modelBuilder.Entity("BookMarket.Domain.Genre", b =>
                 {
                     b.Property<int>("Id")
@@ -125,6 +166,61 @@ namespace BookMarket.DataAccess.Migrations
                         .IsUnique();
 
                     b.ToTable("Genres");
+                });
+
+            modelBuilder.Entity("BookMarket.Domain.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Time")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2021, 6, 13, 17, 11, 30, 763, DateTimeKind.Local).AddTicks(1536));
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("BookMarket.Domain.OrderBook", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrderId", "BookId");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("OrderBooks");
                 });
 
             modelBuilder.Entity("BookMarket.Domain.Publisher", b =>
@@ -364,6 +460,55 @@ namespace BookMarket.DataAccess.Migrations
                     b.Navigation("Genre");
                 });
 
+            modelBuilder.Entity("BookMarket.Domain.Cart", b =>
+                {
+                    b.HasOne("BookMarket.Domain.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BookMarket.Domain.User", "User")
+                        .WithMany("Carts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BookMarket.Domain.Order", b =>
+                {
+                    b.HasOne("BookMarket.Domain.User", "User")
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BookMarket.Domain.OrderBook", b =>
+                {
+                    b.HasOne("BookMarket.Domain.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BookMarket.Domain.Order", "Order")
+                        .WithMany("OrderBooks")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("BookMarket.Domain.UserUseCase", b =>
                 {
                     b.HasOne("BookMarket.Domain.User", "User")
@@ -385,6 +530,11 @@ namespace BookMarket.DataAccess.Migrations
                     b.Navigation("BookGenres");
                 });
 
+            modelBuilder.Entity("BookMarket.Domain.Order", b =>
+                {
+                    b.Navigation("OrderBooks");
+                });
+
             modelBuilder.Entity("BookMarket.Domain.Publisher", b =>
                 {
                     b.Navigation("Books");
@@ -392,6 +542,10 @@ namespace BookMarket.DataAccess.Migrations
 
             modelBuilder.Entity("BookMarket.Domain.User", b =>
                 {
+                    b.Navigation("Carts");
+
+                    b.Navigation("Orders");
+
                     b.Navigation("UserUseCases");
                 });
 

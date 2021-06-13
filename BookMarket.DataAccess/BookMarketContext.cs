@@ -23,6 +23,8 @@ namespace BookMarket.DataAccess
             modelBuilder.ApplyConfiguration(new WriterConfiguration());
             modelBuilder.ApplyConfiguration(new BookConfiguration());
             modelBuilder.ApplyConfiguration(new PublisherConfiguration());
+            modelBuilder.ApplyConfiguration(new CartConfiguration());
+            modelBuilder.ApplyConfiguration(new OrderConfiguration());
 
             // Deleted Rows Hidden
             modelBuilder.Entity<User>().HasQueryFilter(x => !x.IsDeleted);
@@ -30,12 +32,19 @@ namespace BookMarket.DataAccess
             modelBuilder.Entity<Writer>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Book>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Publisher>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Cart>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Order>().HasQueryFilter(x => !x.IsDeleted);
 
             // Defining Table Keys
             modelBuilder.Entity<BookGenre>().HasKey(x => new
             {
                 x.BookId,
                 x.GenreId
+            });
+            modelBuilder.Entity<OrderBook>().HasKey(x => new
+            {
+                x.OrderId,
+                x.BookId
             });
         }
 
@@ -69,8 +78,10 @@ namespace BookMarket.DataAccess
         public DbSet<Writer> Writers { get; set; }
         public DbSet<Publisher> Publishers { get; set; }
         public DbSet<Book> Books { get; set; }
-
-
+        public DbSet<BookGenre> BookGenre { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderBook> OrderBooks { get; set; }
         public DbSet<UseCaseLog> UseCaseLogs { get; set; }
     }
 }
