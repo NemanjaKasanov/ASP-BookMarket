@@ -18,7 +18,7 @@ namespace BookMarket.Implementation.Commands.UserUseCaseCommands
             this.context = context;
         }
 
-        public int Id => 4;
+        public int Id => 2;
 
         public string Name => "Delete UserUseCase Command";
 

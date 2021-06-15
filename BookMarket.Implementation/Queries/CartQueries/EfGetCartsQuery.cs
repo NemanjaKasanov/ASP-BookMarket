@@ -22,7 +22,7 @@ namespace BookMarket.Implementation.Queries.CartQueries
             this.mapper = mapper;
         }
 
-        public int Id => 4;
+        public int Id => 1;
 
         public string Name => "Get Carts Query";
 

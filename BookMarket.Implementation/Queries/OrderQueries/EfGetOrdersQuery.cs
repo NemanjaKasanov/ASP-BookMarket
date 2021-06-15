@@ -22,7 +22,7 @@ namespace BookMarket.Implementation.Queries.OrderQueries
             this.mapper = mapper;
         }
 
-        public int Id => 4;
+        public int Id => 2;
 
         public string Name => "Get Orders Query";
 

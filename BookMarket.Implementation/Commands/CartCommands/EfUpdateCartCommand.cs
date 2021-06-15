@@ -24,7 +24,7 @@ namespace BookMarket.Implementation.Commands.CartCommands
             this.mapper = mapper;
         }
 
-        public int Id => 4;
+        public int Id => 1;
 
         public string Name => "Update Cart Command";
 

@@ -25,7 +25,7 @@ namespace BookMarket.Implementation.Commands.PublisherCommands
             this.mapper = mapper;
         }
 
-        public int Id => 4;
+        public int Id => 2;
 
         public string Name => "Update Publisher Command";
 

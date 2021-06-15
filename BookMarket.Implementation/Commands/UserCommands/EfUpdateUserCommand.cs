@@ -25,7 +25,7 @@ namespace BookMarket.Implementation.Commands.UserCommands
             this.mapper = mapper;
         }
 
-        public int Id => 2;
+        public int Id => 1;
 
         public string Name => "Update User.";
 

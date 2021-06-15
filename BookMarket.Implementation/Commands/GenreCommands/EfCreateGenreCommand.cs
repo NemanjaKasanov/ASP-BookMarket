@@ -20,7 +20,7 @@ namespace BookMarket.Implementation.Commands.GenreCommands
             this.validator = validator;
         }
 
-        public int Id => 4;
+        public int Id => 2;
 
         public string Name => "Create Genre";
 

@@ -17,7 +17,7 @@ namespace BookMarket.Implementation.Commands.BookCommands
             this.context = context;
         }
 
-        public int Id => 4;
+        public int Id => 2;
 
         public string Name => "Delete Book Command";
 

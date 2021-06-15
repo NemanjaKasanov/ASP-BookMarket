@@ -20,7 +20,7 @@ namespace BookMarket.Implementation.Commands.CartCommands
             this.validator = validator;
         }
 
-        public int Id => 4;
+        public int Id => 1;
 
         public string Name => "Create Cart Command";
 
