@@ -4,14 +4,17 @@ using BookMarket.Application.Commands.GenreCommands;
 using BookMarket.Application.Commands.OrderCommands;
 using BookMarket.Application.Commands.PublisherCommands;
 using BookMarket.Application.Commands.UserCommands;
+using BookMarket.Application.Commands.UserUseCaseCommands;
 using BookMarket.Application.Commands.WriterCommands;
 using BookMarket.Application.Interfaces;
 using BookMarket.Application.Queries.BookQueries;
 using BookMarket.Application.Queries.CartQueries;
 using BookMarket.Application.Queries.GenreQueries;
+using BookMarket.Application.Queries.LogQueries;
 using BookMarket.Application.Queries.OrdersQueries;
 using BookMarket.Application.Queries.PublisherQueries;
 using BookMarket.Application.Queries.UserQueries;
+using BookMarket.Application.Queries.UserUseCasesQueries;
 using BookMarket.Application.Queries.WriterQueries;
 using BookMarket.DataAccess;
 using BookMarket.Implementation.Commands.BookCommands;
@@ -20,13 +23,16 @@ using BookMarket.Implementation.Commands.GenreCommands;
 using BookMarket.Implementation.Commands.OrderCommands;
 using BookMarket.Implementation.Commands.PublisherCommands;
 using BookMarket.Implementation.Commands.UserCommands;
+using BookMarket.Implementation.Commands.UserUseCaseCommands;
 using BookMarket.Implementation.Commands.WriterCommands;
 using BookMarket.Implementation.Queries.BookQueries;
 using BookMarket.Implementation.Queries.CartQueries;
 using BookMarket.Implementation.Queries.GenreQueries;
+using BookMarket.Implementation.Queries.LogQueries;
 using BookMarket.Implementation.Queries.OrderQueries;
 using BookMarket.Implementation.Queries.PublisherCommands;
 using BookMarket.Implementation.Queries.UserQueries;
+using BookMarket.Implementation.Queries.UserUseCaseQueries;
 using BookMarket.Implementation.Queries.WriterQueries;
 using BookMarket.Implementation.Validators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -96,6 +102,16 @@ namespace BookMarket.Api.Core
             services.AddTransient<ICreateOrderCommand, EfCreateOrderCommand>();
             services.AddTransient<IUpdateOrderCommand, EfUpdateOrderCommand>();
             services.AddTransient<IDeleteOrderCommand, EfDeleteOrderCommand>();
+
+            // UserUseCases
+            services.AddTransient<IGetCasesQuery, EfGetCasesQuery>();
+            services.AddTransient<ICreateCaseCommand, EfCreateCaseCommand>();
+            services.AddTransient<IDeleteCaseCommand, EfDeleteCaseCommand>();
+
+            // Logs
+            services.AddTransient<IGetLogsQuery, EfGetLogsQuery>();
+
+
 
             // Validators
             services.AddTransient<CreateUserValidator>();

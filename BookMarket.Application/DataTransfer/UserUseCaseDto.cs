@@ -5,10 +5,11 @@ using System.Text;
 
 namespace BookMarket.Application.DataTransfer
 {
-    public class GenreDto
+    public class UserUseCaseDto
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public IEnumerable<BookDto> Books { get; set; }
+        public int UserId { get; set; }
+        public int UseCaseId { get; set; }
+        public virtual UserDto User { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using BookMarket.Application.DataTransfer;
 using BookMarket.Application.Queries.GenreQueries;
 using BookMarket.Application.Searches;
 using BookMarket.DataAccess;
+using BookMarket.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;

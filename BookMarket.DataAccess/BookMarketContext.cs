@@ -82,6 +82,8 @@ namespace BookMarket.DataAccess
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderBook> OrderBooks { get; set; }
+
+        public DbSet<UserUseCase> UserUseCase { get; set; }
         public DbSet<UseCaseLog> UseCaseLogs { get; set; }
     }
 }

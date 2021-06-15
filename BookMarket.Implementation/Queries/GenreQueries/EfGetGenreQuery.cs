@@ -4,8 +4,10 @@ using BookMarket.Application.Exceptions;
 using BookMarket.Application.Queries.GenreQueries;
 using BookMarket.DataAccess;
 using BookMarket.Domain;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace BookMarket.Implementation.Queries.GenreQueries
@@ -27,9 +29,26 @@ namespace BookMarket.Implementation.Queries.GenreQueries
 
         public GenreDto Execute(int search)
         {
-            var genre = context.Genres.Find(search);
+            var genre = context.Genres.Include(x => x.BookGenres).ThenInclude(x => x.Book).FirstOrDefault(x => x.Id == search);
             if (genre == null) throw new EntityNotFoundException(search, typeof(Genre));
-            return mapper.Map<GenreDto>(genre);
+
+            var ret = new GenreDto
+            {
+                Id = genre.Id,
+                Name = genre.Name,
+                Books = genre.BookGenres.Select(x => new BookDto
+                {
+                    Id = x.Book.Id,
+                    Title = x.Book.Title,
+                    Description = x.Book.Description,
+                    Year = x.Book.Year,
+                    Price = x.Book.Price,
+                    Pages = x.Book.Pages,
+                    Writer = mapper.Map<WriterDto>(context.Writers.Find(x.Book.WriterId)),
+                    Publisher = mapper.Map<PublisherDto>(context.Publishers.Find(x.Book.PublisherId))
+                })
+            };
+            return ret;
         }
     }
 }
