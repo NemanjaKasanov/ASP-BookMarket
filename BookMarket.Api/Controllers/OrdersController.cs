@@ -1,4 +1,9 @@
 ﻿using BookMarket.Application;
+using BookMarket.Application.Commands.OrderCommands;
+using BookMarket.Application.Queries.OrdersQueries;
+using BookMarket.Application.Searches;
+using BookMarket.Domain;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -22,34 +27,52 @@ namespace BookMarket.Api.Controllers
 
         // GET: api/<OrdersController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IActionResult Get(
+            [FromQuery] OrdersSearch dto,
+            [FromServices] IGetOrdersQuery query)
         {
-            return new string[] { "value1", "value2" };
+            return Ok(executor.ExecuteQuery(query, dto));
         }
 
         // GET api/<OrdersController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IActionResult Get(
+            int id,
+            [FromServices] IGetOrderQuery query)
         {
-            return "value";
+            return Ok(executor.ExecuteQuery(query, id));
         }
 
         // POST api/<OrdersController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post(
+            [FromBody] Order dto,
+            [FromServices] ICreateOrderCommand command)
         {
+            executor.ExecuteCommand(command, dto);
+            return StatusCode(StatusCodes.Status201Created);
         }
 
         // PUT api/<OrdersController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(
+            int id, 
+            [FromBody] Order dto,
+            [FromServices] IUpdateOrderCommand command)
         {
+            dto.Id = id;
+            executor.ExecuteCommand(command, dto);
+            return StatusCode(StatusCodes.Status202Accepted);
         }
 
         // DELETE api/<OrdersController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(
+            int id,
+            [FromServices] IDeleteOrderCommand command)
         {
+            executor.ExecuteCommand(command, id);
+            return NoContent();
         }
     }
 }

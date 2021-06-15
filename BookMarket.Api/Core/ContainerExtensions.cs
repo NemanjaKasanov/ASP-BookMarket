@@ -1,6 +1,7 @@
 ﻿using BookMarket.Application.Commands.BookCommands;
 using BookMarket.Application.Commands.CartCommands;
 using BookMarket.Application.Commands.GenreCommands;
+using BookMarket.Application.Commands.OrderCommands;
 using BookMarket.Application.Commands.PublisherCommands;
 using BookMarket.Application.Commands.UserCommands;
 using BookMarket.Application.Commands.WriterCommands;
@@ -8,6 +9,7 @@ using BookMarket.Application.Interfaces;
 using BookMarket.Application.Queries.BookQueries;
 using BookMarket.Application.Queries.CartQueries;
 using BookMarket.Application.Queries.GenreQueries;
+using BookMarket.Application.Queries.OrdersQueries;
 using BookMarket.Application.Queries.PublisherQueries;
 using BookMarket.Application.Queries.UserQueries;
 using BookMarket.Application.Queries.WriterQueries;
@@ -15,12 +17,14 @@ using BookMarket.DataAccess;
 using BookMarket.Implementation.Commands.BookCommands;
 using BookMarket.Implementation.Commands.CartCommands;
 using BookMarket.Implementation.Commands.GenreCommands;
+using BookMarket.Implementation.Commands.OrderCommands;
 using BookMarket.Implementation.Commands.PublisherCommands;
 using BookMarket.Implementation.Commands.UserCommands;
 using BookMarket.Implementation.Commands.WriterCommands;
 using BookMarket.Implementation.Queries.BookQueries;
 using BookMarket.Implementation.Queries.CartQueries;
 using BookMarket.Implementation.Queries.GenreQueries;
+using BookMarket.Implementation.Queries.OrderQueries;
 using BookMarket.Implementation.Queries.PublisherCommands;
 using BookMarket.Implementation.Queries.UserQueries;
 using BookMarket.Implementation.Queries.WriterQueries;
@@ -87,8 +91,11 @@ namespace BookMarket.Api.Core
             services.AddTransient<IDeleteCartCommand, EfDeleteCartCommand>();
 
             // Orders
-
-
+            services.AddTransient<IGetOrdersQuery, EfGetOrdersQuery>();
+            services.AddTransient<IGetOrderQuery, EfGetOrderQuery>();
+            services.AddTransient<ICreateOrderCommand, EfCreateOrderCommand>();
+            services.AddTransient<IUpdateOrderCommand, EfUpdateOrderCommand>();
+            services.AddTransient<IDeleteOrderCommand, EfDeleteOrderCommand>();
 
             // Validators
             services.AddTransient<CreateUserValidator>();
@@ -102,6 +109,7 @@ namespace BookMarket.Api.Core
             services.AddTransient<CreateBookValidator>();
             services.AddTransient<UpdateBookValidator>();
             services.AddTransient<CreateCartValidator>();
+            services.AddTransient<CreateOrderValidator>();
         }
 
         public static void AddApplicationActor(this IServiceCollection services)
