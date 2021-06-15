@@ -3,6 +3,7 @@ using BookMarket.Application.Commands.UserUseCaseCommands;
 using BookMarket.Application.Queries.UserUseCasesQueries;
 using BookMarket.Application.Searches;
 using BookMarket.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -26,6 +27,7 @@ namespace BookMarket.Api.Controllers
         }
 
         // GET: api/<UserUseCasesController>
+        [Authorize]
         [HttpGet]
         public IActionResult Get(
             [FromQuery] CasesSearch dto,
@@ -35,6 +37,7 @@ namespace BookMarket.Api.Controllers
         }
 
         // POST api/<UserUseCasesController>
+        [Authorize]
         [HttpPost]
         public IActionResult Post(
             [FromBody] UserUseCase dto,
@@ -45,6 +48,7 @@ namespace BookMarket.Api.Controllers
         }
 
         // DELETE api/<UserUseCasesController>/5
+        [Authorize]
         [HttpDelete("{id}")]
         public IActionResult Delete(
             int id,

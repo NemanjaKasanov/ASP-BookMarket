@@ -1,6 +1,7 @@
 ﻿using BookMarket.Application;
 using BookMarket.Application.Queries.LogQueries;
 using BookMarket.Application.Searches;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,7 @@ namespace BookMarket.Api.Controllers
         }
 
         // GET: api/<LogsController>
+        [Authorize]
         [HttpGet]
         public IActionResult Get(
             [FromQuery] LogsSearch dto,

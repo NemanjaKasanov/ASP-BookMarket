@@ -5,6 +5,7 @@ using BookMarket.Application.Queries.CartQueries;
 using BookMarket.Application.Searches;
 using BookMarket.DataAccess;
 using BookMarket.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -28,6 +29,7 @@ namespace BookMarket.Api.Controllers
         }
 
         // GET: api/<CartsController>
+        [Authorize]
         [HttpGet]
         public IActionResult Get(
             [FromQuery] CartsSearch dto,
@@ -37,6 +39,7 @@ namespace BookMarket.Api.Controllers
         }
 
         // GET api/<CartsController>/5
+        [Authorize]
         [HttpGet("{id}")]
         public IActionResult Get(
             int id,
@@ -46,6 +49,7 @@ namespace BookMarket.Api.Controllers
         }
 
         // POST api/<CartsController>
+        [Authorize]
         [HttpPost]
         public IActionResult Post(
             [FromBody] Cart dto,
@@ -56,6 +60,7 @@ namespace BookMarket.Api.Controllers
         }
 
         // PUT api/<CartsController>/5
+        [Authorize]
         [HttpPut("{id}")]
         public IActionResult Put(
             int id, 
@@ -68,6 +73,7 @@ namespace BookMarket.Api.Controllers
         }
 
         // DELETE api/<CartsController>/5
+        [Authorize]
         [HttpDelete("{id}")]
         public IActionResult Delete(
             int id,

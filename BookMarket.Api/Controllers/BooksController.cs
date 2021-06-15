@@ -8,6 +8,7 @@ using BookMarket.DataAccess;
 using BookMarket.Domain;
 using BookMarket.Implementation.Extensions;
 using BookMarket.Implementation.Validators;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -54,6 +55,7 @@ namespace BookMarket.Api.Controllers
         }
 
         // POST api/<BooksController>
+        [Authorize]
         [HttpPost]
         public IActionResult Post(
             [FromBody] Book dto,
@@ -64,6 +66,7 @@ namespace BookMarket.Api.Controllers
         }
 
         // PUT api/<BooksController>/5
+        [Authorize]
         [HttpPut("{id}")]
         public IActionResult Put(
             int id, 
@@ -76,6 +79,7 @@ namespace BookMarket.Api.Controllers
         }
 
         // DELETE api/<BooksController>/5
+        [Authorize]
         [HttpDelete("{id}")]
         public IActionResult Delete(
             int id,
